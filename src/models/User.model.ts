@@ -1,34 +1,29 @@
-import sequelize from "../config/database";
+import { sequelize } from "@/database";
 import bcrypt from "bcryptjs";
-import { DataTypes, Model, Optional } from "sequelize";
+import { DataTypes, Model } from "sequelize";
+import type {
+  UserAttributes,
+  UserCreationAttributes,
+} from "@/types/User.types";
 
-interface UserAttributes {
-  id: number;
-  username: string;
-  password: string;
-  role: string;
-}
-
-interface UserCreationAttributes extends Optional<UserAttributes, "id"> {}
-
-class User
+class UserCredentials
   extends Model<UserAttributes, UserCreationAttributes>
   implements UserAttributes
 {
-  public id!: number;
-  public username!: string;
-  public password!: string;
-  public role!: string;
+  declare id: number;
+  declare username: string;
+  declare email: string;
+  declare password: string;
+  declare role: string;
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  declare readonly createdAt: Date;
+  declare readonly updatedAt: Date;
 
   public async validatePassword(password: string): Promise<boolean> {
     return await bcrypt.compare(password, this.password);
   }
 }
-
-User.init(
+UserCredentials.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -36,6 +31,10 @@ User.init(
       primaryKey: true,
     },
     username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    email: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -50,9 +49,9 @@ User.init(
   },
   {
     sequelize,
-    tableName: "Users",
+    tableName: "UsersCredentials",
     hooks: {
-      beforeCreate: async (user: User): Promise<void> => {
+      beforeCreate: async (user: UserCredentials): Promise<void> => {
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(user.password, salt);
       },
@@ -60,4 +59,4 @@ User.init(
   },
 );
 
-export default User;
+export default UserCredentials;
