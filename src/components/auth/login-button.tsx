@@ -6,13 +6,14 @@ interface LoginButtonProps {
   children: React.ReactNode;
   mode?: "modal" | "redirect";
   asChild?: boolean;
+  onClick: string;
 }
 
-export const LoginButton = ({ children, mode, asChild }: LoginButtonProps) => {
+export const LoginButton = ({ children, mode, asChild, onClick }: LoginButtonProps) => {
   const router = useRouter();
 
-  const onClick = () => {
-    router.push("/login");
+  const clicked = () => {
+    router.push(onClick);
   };
 
   if (mode == "modal") {
@@ -20,7 +21,7 @@ export const LoginButton = ({ children, mode, asChild }: LoginButtonProps) => {
   }
 
   return (
-    <span onClick={onClick} className="cursor-pointer">
+    <span onClick={clicked} className="cursor-pointer">
       {children}
     </span>
   );

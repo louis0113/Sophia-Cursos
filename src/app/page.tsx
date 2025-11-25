@@ -20,7 +20,7 @@ export default function Home() {
         </h1>
         <p className="text-white text-lg"> A simple authentication service</p>
         <div>
-          <LoginButton mode="redirect">
+          <LoginButton mode="redirect" onClick="/login">
             <Button variant="secondary" size="lg">
               Sign In
             </Button>

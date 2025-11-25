@@ -15,19 +15,24 @@ import {
   FieldSeparator,
   FieldSet,
 } from "@/components/ui/field";
-
+import { LoginButton } from "@/components/auth/login-button";
+import { Button } from "@/components/ui/button";
+import { Controller } from "react-hook-form";
 export const LoginForm = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<z.infer<typeof LoginSchema>>({
+
+type FormValues = z.infer<typeof LoginSchema>
+
+  const  form  = useForm< FormValues>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
+  
+  function onSubmit(data : FormValues) {
+    console.log(data)
+  }
 
   return (
     <CardWrapper
@@ -36,28 +41,51 @@ export const LoginForm = () => {
       backButtonHref="/register"
       showSocial
     >
-      <FieldSet onSubmit={handleSubmit(() => {})}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <FieldSet >
         <FieldGroup>
-          <Field>
+            <Controller name="email" control={form.control} render={({field, fieldState}) => {
+<Field>
             <FieldLabel htmlFor="email">Email</FieldLabel>
-            <Input {...register("email")} placeholder="some@email.com" />
-            {errors.email && <p>{errors.email.message}</p>}
+            <Input {...field} placeholder="some@email.com" />
             <FieldDescription>Put your email on your account.</FieldDescription>
           </Field>
+
+            }}/>
+          
           <Field>
             <FieldLabel htmlFor="password">Password</FieldLabel>
             <FieldDescription>
               Must be at least 8 characters long.
             </FieldDescription>
             <Input
-              {...register("password")}
+              
               type="password"
               placeholder="••••••••"
             />
-            {errors.password && <p>{errors.password.message}</p>}
-          </Field>
+        
+          </Field >
+
+            <Field orientation="vertical">
+              <LoginButton mode="redirect" onClick="">
+
+  <Button className="w-full" variant="outline"  size="lg" type="reset">
+    Reset
+  </Button>
+</LoginButton>
+<LoginButton mode="redirect" onClick="">
+
+  <Button className="w-full" size="lg" type="submit">
+    Log in
+  </Button>
+</LoginButton>
+
+            </Field>
         </FieldGroup>
       </FieldSet>
+
+
+      </form>
     </CardWrapper>
   );
 };
