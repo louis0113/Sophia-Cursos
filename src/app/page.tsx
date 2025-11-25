@@ -1,33 +1,32 @@
-import Image from "next/image";
-import { auth } from "@/auth";
-import { SignInButton } from "@/components/sign-in-button";
-import { SignIn } from "@/components/sign-in";
-import Link from "next/link";
-
-export default async function Home() {
-  const session = await auth();
-
-  if (session?.user) {
-    return (
-      <div>
-        <Link className="bg-gray-100" href="/api/user-info">
-          {" "}
-          Profile
-        </Link>
-      </div>
-    );
-  }
+import { Poppins } from "next/font/google";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { LoginButton } from "@/components/auth/login-button";
+const font = Poppins({
+  subsets: ["latin"],
+  weight: ["600"],
+});
+export default function Home() {
   return (
-    <div className="bg-yellow-700">
-      <div className="bg-blue-600">
-        <Image src="/logo.png" alt="logo" height={300} width={300}></Image>
-        <h1 className="p-12"></h1>
+    <main className="flex h-full flex-col items-center justify-center bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% ">
+      <div className="space-y-6 text-center">
+        <h1
+          className={cn(
+            "text-6xl font-semibold text-white drop-shadow-md",
+            font.className,
+          )}
+        >
+          🔐 Auth
+        </h1>
+        <p className="text-white text-lg"> A simple authentication service</p>
+        <div>
+          <LoginButton mode="redirect">
+            <Button variant="secondary" size="lg">
+              Sign In
+            </Button>
+          </LoginButton>
+        </div>
       </div>
-      <SignIn />
-      <SignInButton />
-      <Link className="text-gray-50" href="/api/auth/register">
-        Sign up with us
-      </Link>
-    </div>
+    </main>
   );
 }

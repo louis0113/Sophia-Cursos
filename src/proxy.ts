@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { auth } from "@/auth";
 
-const authorizedRoles = ["/api/user-info"];
+const authorizedRoles = ["/user-info"];
 
 export default async function proxy(request: NextRequest) {
   const session = await auth();

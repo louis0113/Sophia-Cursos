@@ -1,16 +1,15 @@
 "use client";
 
 import { loginGithub, loginGoogle } from "@/app/lib/actions/auth";
+import { Button } from "@/components/ui/button";
 export const SignInButton = () => {
   return (
     <div>
-      <button className="bg-blue-200 " onClick={() => loginGithub()}>
+      <Button size="lg" variant="redsea" onClick={() => loginGithub()}>
         Sign with Github
-      </button>
+      </Button>
 
-      <button className="bg-red-200" onClick={() => loginGoogle()}>
-        Sign with Google
-      </button>
+      <Button onClick={() => loginGoogle()}>Sign with Google</Button>
     </div>
   );
 };

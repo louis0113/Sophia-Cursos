@@ -4,7 +4,7 @@ import Credentials from "next-auth/providers/credentials";
 import Github from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import SequelizeAdapter from "@auth/sequelize-adapter";
-import { signInSchema } from "@/lib/zod";
+import { LoginSchema } from "../schemas/index";
 import { sequelize } from "@/database";
 import UserCredentials from "@/models/User.model";
 
@@ -16,8 +16,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         password: {},
       },
       authorize: async (credentials: any): Promise<any> => {
-        const { email, password } = await signInSchema.parseAsync(credentials);
-
         const user = await UserCredentials.findOne({
           where: { email: email },
         });

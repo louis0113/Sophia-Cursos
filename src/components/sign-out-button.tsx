@@ -1,5 +1,4 @@
 "use client";
-
 import { logout } from "@/app/lib/actions/auth";
 
 export const SignOutButton = () => {
