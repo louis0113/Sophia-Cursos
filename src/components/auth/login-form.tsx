@@ -91,6 +91,7 @@ export const LoginForm = () => {
                   className="w-full"
                   variant="outline"
                   size="lg"
+                  type="reset"
                   onClick={() => {
                     form.reset();
                   }}
