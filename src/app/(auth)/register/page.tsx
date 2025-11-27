@@ -1,4 +1,4 @@
-import { SignupForm } from "@/components/sign-up-form";
+import { RegisterForm } from "@/components/auth/register-form";
 export default function Register() {
-  return <SignupForm />;
+  return <RegisterForm />;
 }

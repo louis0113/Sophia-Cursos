@@ -3,14 +3,12 @@
 import { signIn, signOut } from "@/auth";
 
 export const loginGithub = async () => {
-  await signIn("github", { redirectTo: "/user-info" });
+  await signIn("github", { redirectTo: "/api/user-info" });
 };
 export const loginGoogle = async () => {
-  await signIn("google", { redirectTo: "/user-info" });
+  await signIn("google", { redirectTo: "/api/user-info" });
 };
 
 export const logout = async () => {
   await signOut({ redirectTo: "/" });
 };
-
-export const signup = async () => {};
