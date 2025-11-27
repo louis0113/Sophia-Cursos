@@ -1,6 +1,6 @@
 "use server";
 import * as z from "zod";
-import UserCredentials from "@/models/User.model";
+import { User } from "@/models/User.model";
 import { RegisterSchema } from "@/schemas";
 import { getUserByEmail } from "@/app/lib/data/user";
 
@@ -19,8 +19,8 @@ export const Register = async (values: z.infer<typeof RegisterSchema>) => {
     return { error: "User already exists" };
   }
 
-  await UserCredentials.create({
-    username: username,
+  await User.create({
+    name: username,
     email: email,
     password: password,
     role: "teste",

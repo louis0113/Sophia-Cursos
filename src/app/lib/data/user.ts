@@ -1,9 +1,9 @@
 "use server";
-import UserCredentials from "@/models/User.model";
+import { User } from "@/models/User.model";
 
 export const getUserByEmail = async (email: string) => {
   try {
-    const user = await UserCredentials.findOne({
+    const user = await User.findOne({
       where: { email: email },
     });
     return user;
@@ -13,7 +13,7 @@ export const getUserByEmail = async (email: string) => {
 };
 export const getUserById = async (id: string) => {
   try {
-    const user = await UserCredentials.findOne({
+    const user = await User.findOne({
       where: { id: id },
     });
     return user;
