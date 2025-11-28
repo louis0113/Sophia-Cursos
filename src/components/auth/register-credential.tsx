@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { useForm, Controller } from "react-hook-form";
 import { RegisterSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginButton } from "@/components/auth/login-button";
 import { Button } from "@/components/ui/button";
 import { useTransition, useState } from "react";
 import { Register } from "@/app/lib/actions/register";
@@ -133,6 +132,7 @@ export const CredentialRegister = () => {
               onClick={() => {
                 form.reset();
                 setSuccess("");
+                setError("");
               }}
             >
               Reset

@@ -4,11 +4,11 @@ import { Input } from "@/components/ui/input";
 import { useForm, Controller } from "react-hook-form";
 import { LoginSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginButton } from "@/components/auth/login-button";
 import { Button } from "@/components/ui/button";
 import { SelectRole } from "@/components/auth/select";
 import { Login } from "@/app/lib/actions/login";
 import { FormError } from "@/components/form-error";
+import { useSearchParams } from "next/navigation";
 import { FormSucess } from "@/components/form-sucess";
 import { useTransition, useState } from "react";
 import {
@@ -20,6 +20,12 @@ import {
 } from "@/components/ui/field";
 
 export const CredentialLogin = () => {
+  const searchParams = useSearchParams();
+  const urlError =
+    searchParams.get("error") === "OAuthAccountNotLinked"
+      ? "Email already in use with diferent provider!"
+      : "";
+
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
@@ -38,8 +44,8 @@ export const CredentialLogin = () => {
     setSuccess("");
     startTransition(() => {
       Login(data).then((data) => {
-        setError(data.error);
-        setSuccess(data.success);
+        setError(data?.error);
+        setSuccess(data?.success);
       });
     });
   }
@@ -92,7 +98,7 @@ export const CredentialLogin = () => {
             )}
           />
           <SelectRole />
-          <FormError message={error} />
+          <FormError message={error || urlError} />
           <FormSucess message={success} />
           <Field orientation="vertical">
             <Button

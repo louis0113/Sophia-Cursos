@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/select";
 
 export const SelectRole = () => {
+  const [role, setRole] = useState("");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -20,7 +21,12 @@ export const SelectRole = () => {
   }
 
   return (
-    <Select>
+    <Select
+      value={role}
+      onValueChange={(role) => {
+        setRole(role);
+      }}
+    >
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Role" />
       </SelectTrigger>
@@ -28,6 +34,7 @@ export const SelectRole = () => {
         <SelectItem value="aluno">Aluno</SelectItem>
         <SelectItem value="instrutor">Instrutor</SelectItem>
       </SelectContent>
+      <p>{role}</p>
     </Select>
   );
 };
