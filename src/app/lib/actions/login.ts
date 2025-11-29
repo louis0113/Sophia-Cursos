@@ -12,12 +12,13 @@ export const Login = async (values: z.infer<typeof LoginSchema>) => {
     return { error: "Invalid fields" };
   }
 
-  const { email, password } = validateFields.data;
+  const { email, password, role } = validateFields.data;
 
   try {
     await signIn("credentials", {
       email,
       password,
+      role, // Passa o role para o NextAuth
       redirectTo: DEFAULT_LOGIN_REDIRECT,
     });
 
@@ -28,7 +29,7 @@ export const Login = async (values: z.infer<typeof LoginSchema>) => {
         case "CredentialsSignin":
           return { error: "Invalid credentials!" };
         default:
-          return { error: "Somethign went wrong" };
+          return { error: "Something went wrong" };
       }
     }
     throw err;

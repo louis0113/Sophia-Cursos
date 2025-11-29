@@ -12,7 +12,7 @@ export const Register = async (values: z.infer<typeof RegisterSchema>) => {
     return { error: "Invalid fields" };
   }
 
-  const { username, email, password } = validateFields.data;
+  const { username, email, password, role } = validateFields.data;
 
   const existingUser = await getUserByEmail(email);
 
@@ -27,7 +27,7 @@ export const Register = async (values: z.infer<typeof RegisterSchema>) => {
     name: username,
     email: email,
     password: hashedPassword,
-    role: "",
+    role: role, // Agora o role vem do formulário
   });
 
   return { success: "User created!" };

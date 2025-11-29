@@ -8,5 +8,5 @@ export const sequelize = new Sequelize(url, {
 });
 
 if (process.env.NODE_ENV === "development") {
-  sequelize.sync({ force: true });
+  sequelize.sync();
 }

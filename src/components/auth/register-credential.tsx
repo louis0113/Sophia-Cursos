@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { useTransition, useState } from "react";
 import { Register } from "@/app/lib/actions/register";
-import { SelectRole } from "@/components/auth/select";
 import { FormError } from "@/components/form-error";
 import { FormSucess } from "@/components/form-sucess";
 import {
@@ -18,6 +17,13 @@ import {
   FieldLabel,
   FieldSet,
 } from "@/components/ui/field";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const CredentialRegister = () => {
   const [error, setError] = useState<string | undefined>("");
@@ -29,6 +35,7 @@ export const CredentialRegister = () => {
       username: "",
       email: "",
       password: "",
+      role: undefined,
     },
   });
 
@@ -120,7 +127,38 @@ export const CredentialRegister = () => {
               </Field>
             )}
           />
-          <SelectRole />
+
+          <Controller
+            name="role"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="role">Role</FieldLabel>
+                <Select
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  disabled={isPending}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="aluno">Aluno</SelectItem>
+                    <SelectItem value="instrutor">Instrutor</SelectItem>
+                  </SelectContent>
+                </Select>
+                {fieldState.error?.message && (
+                  <FieldError
+                    errors={[{ message: fieldState.error.message }]}
+                  />
+                )}
+                <FieldDescription>
+                  Select your role in the platform
+                </FieldDescription>
+              </Field>
+            )}
+          />
+
           <FormError message={error} />
           <FormSucess message={success} />
           <Field orientation="vertical">
