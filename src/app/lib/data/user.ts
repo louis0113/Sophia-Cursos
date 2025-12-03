@@ -1,24 +1,34 @@
-"use server";
+import { sequelize } from "@/auth";
+import { UserAttributes } from "@/types/user";
 
-import { sequelize as db } from "@/database";
-
-export const getUserByEmail = async (email: string) => {
+export async function getUserByEmail(
+  email: string,
+): Promise<UserAttributes | null> {
   try {
-    const user = await db.model("user").findOne({
-      where: { email: email },
+    const user = await sequelize.model("user").findOne({
+      where: { email },
     });
-    return user;
-  } catch {
+
+    if (!user) return null;
+
+    return user.get({ plain: true }) as UserAttributes;
+  } catch (error) {
+    console.error("Error fetching user by email:", error);
     return null;
   }
-};
-export const getUserById = async (id: string) => {
+}
+
+export async function getUserById(id: string): Promise<UserAttributes | null> {
   try {
-    const user = await db.model("user").findOne({
-      where: { id: id },
+    const user = await sequelize.model("user").findOne({
+      where: { id },
     });
-    return user;
-  } catch {
+
+    if (!user) return null;
+
+    return user.get({ plain: true }) as UserAttributes;
+  } catch (error) {
+    console.error("Error fetching user by id:", error);
     return null;
   }
-};
+}

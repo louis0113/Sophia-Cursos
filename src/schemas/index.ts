@@ -18,3 +18,9 @@ export const RegisterSchema = z.object({
     message: "Role is required",
   }),
 });
+
+export const SelectRole = z.object({
+  role: z.enum(["aluno", "instrutor"], {
+    message: "Role is required",
+  }),
+});

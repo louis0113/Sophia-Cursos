@@ -4,6 +4,7 @@ import { LoginSchema } from "@/schemas";
 import { signIn } from "@/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { AuthError } from "next-auth";
+import { getUserByEmail } from "../data/user";
 
 export const Login = async (values: z.infer<typeof LoginSchema>) => {
   const validateFields = LoginSchema.safeParse(values);
@@ -14,15 +15,20 @@ export const Login = async (values: z.infer<typeof LoginSchema>) => {
 
   const { email, password, role } = validateFields.data;
 
-  try {
-    await signIn("credentials", {
-      email,
-      password,
-      role, // Passa o role para o NextAuth
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
-    });
+  const user = await getUserByEmail(email);
 
-    return { success: "Login with success" };
+  try {
+    if (role === user?.role) {
+      await signIn("credentials", {
+        email,
+        password,
+        role,
+        redirectTo: DEFAULT_LOGIN_REDIRECT,
+      });
+      return { success: "Login with success" };
+    }
+
+    return { error: "Invalid role" };
   } catch (err) {
     if (err instanceof AuthError) {
       switch (err.type) {

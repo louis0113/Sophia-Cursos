@@ -27,7 +27,7 @@ export const Register = async (values: z.infer<typeof RegisterSchema>) => {
     name: username,
     email: email,
     password: hashedPassword,
-    role: role, // Agora o role vem do formulário
+    role: role,
   });
 
   return { success: "User created!" };

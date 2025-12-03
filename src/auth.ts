@@ -10,20 +10,36 @@ import { DataTypes } from "sequelize";
 import bcrypt from "bcryptjs";
 import { getUserByEmail, getUserById } from "@/app/lib/data/user";
 
+interface UserWithRole {
+  id: string;
+  email: string;
+  name?: string | null;
+  password?: string | null;
+  role?: string;
+  emailVerified?: Date | null;
+}
+
 export const { auth, handlers, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
-      authorize: async (credentials: any): Promise<any> => {
+      authorize: async (credentials) => {
         const validateFields = LoginSchema.safeParse(credentials);
 
         if (validateFields.success) {
           const { email, password } = validateFields.data;
-          const user: any = await getUserByEmail(email);
+          const user = await getUserByEmail(email);
 
           if (!user || !user.password) return null;
 
-          if (user && (await bcrypt.compare(password, user.password))) {
-            return user;
+          const passwordMatch = await bcrypt.compare(password, user.password);
+
+          if (passwordMatch) {
+            return {
+              id: user.id,
+              email: user.email,
+              name: user.name || null,
+              role: user.role,
+            };
           }
         }
         return null;
@@ -37,10 +53,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     async linkAccount({ user }) {
       await sequelize
         .model("user")
-        .update(
-          { data: { emailVerified: new Date() } },
-          { where: { id: user.id } },
-        );
+        .update({ emailVerified: new Date() }, { where: { id: user.id } });
     },
   },
   pages: {
@@ -54,19 +67,24 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       }
 
       if (token.role && session.user) {
-        session.user.role = token.role;
+        session.user.role = token.role as string;
       }
 
       return session;
     },
-    async jwt({ token }) {
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = (user as UserWithRole).role;
+        return token;
+      }
+
       if (!token.sub) return token;
 
-      const existingUser: any = await getUserById(token.sub);
+      const existingUser = await getUserById(token.sub);
 
       if (!existingUser) return token;
 
-      token.role = existingUser.role;
+      token.role = (existingUser as any).role || existingUser.role;
       return token;
     },
   },
@@ -81,7 +99,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         role: {
           type: DataTypes.STRING,
           allowNull: false,
-          defaultValue: "aluno",
+          defaultValue: "",
         },
       }),
     },
