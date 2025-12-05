@@ -24,13 +24,15 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { useSession } from "next-auth/react";
 
 export default function RoleSelect() {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
-
+  const { data: session, status } = useSession();
   const router = useRouter();
+
   type FormValues = z.infer<typeof SelectRole>;
   const form = useForm<FormValues>({
     resolver: zodResolver(SelectRole),
@@ -43,9 +45,36 @@ export default function RoleSelect() {
     setError("");
     setSuccess("");
     startTransition(() => {
-      Role(data).then((data) => {});
+      Role(data).then((result) => {
+        if (result?.success) {
+          setSuccess(result.success);
+          setTimeout(() => {
+            router.push(DEFAULT_LOGIN_REDIRECT);
+          }, 500);
+        } else if (result?.error) {
+          setError(result.error);
+        }
+      });
     });
-    router.push(DEFAULT_LOGIN_REDIRECT);
+  }
+
+  if (status === "loading") {
+    return (
+      <CardWrapper
+        headerLabel="Loading..."
+        backButtonLabel="Back to login"
+        backButtonHref="/login"
+      >
+        <div className="flex items-center justify-center p-6">
+          <p className="text-muted-foreground">Loading session...</p>
+        </div>
+      </CardWrapper>
+    );
+  }
+
+  if (!session) {
+    router.push("/login");
+    return null;
   }
 
   return (
@@ -87,6 +116,19 @@ export default function RoleSelect() {
                 </Field>
               )}
             />
+
+            {error && (
+              <div className="bg-destructive/15 p-3 rounded-md flex items-center gap-x-2 text-sm text-destructive">
+                <p>{error}</p>
+              </div>
+            )}
+
+            {success && (
+              <div className="bg-emerald-500/15 p-3 rounded-md flex items-center gap-x-2 text-sm text-emerald-500">
+                <p>{success}</p>
+              </div>
+            )}
+
             <Field orientation="vertical">
               <Button
                 disabled={isPending}
