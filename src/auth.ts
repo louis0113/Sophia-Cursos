@@ -9,15 +9,33 @@ import { LoginSchema } from "./schemas";
 import { DataTypes } from "sequelize";
 import bcrypt from "bcryptjs";
 import { getUserByEmail, getUserById } from "@/app/lib/data/user";
+import type { Adapter } from "next-auth/adapters";
 
 interface UserWithRole {
   id: string;
   email: string;
   name?: string | null;
   password?: string | null;
-  role?: string;
+  role: string;
   emailVerified?: Date | null;
 }
+
+const customAdapter = SequelizeAdapter(sequelize, {
+  models: {
+    User: sequelize.define("user", {
+      ...models.User,
+      password: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      role: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "",
+      },
+    }),
+  },
+});
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   providers: [
@@ -88,22 +106,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       return token;
     },
   },
-  adapter: SequelizeAdapter(sequelize, {
-    models: {
-      User: sequelize.define("user", {
-        ...models.User,
-        password: {
-          type: DataTypes.STRING,
-          allowNull: true,
-        },
-        role: {
-          type: DataTypes.STRING,
-          allowNull: false,
-          defaultValue: "",
-        },
-      }),
-    },
-  }),
+  adapter: customAdapter,
 });
 
 export { sequelize };

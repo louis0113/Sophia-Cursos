@@ -23,5 +23,5 @@ export const Role = async (data: z.infer<typeof SelectRole>) => {
     },
   );
 
-  return { sucess: "Role added sucessfull" };
+  return { success: "Role added successfully" };
 };

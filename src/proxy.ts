@@ -22,9 +22,15 @@ export default async function proxy(request: NextRequest) {
   }
 
   if (isAuthRoute) {
-    if (session) {
+    if (
+      session &&
+      (session?.user?.role === "aluno" ||
+        session?.user?.role === "instrutor" ||
+        session?.user?.role === "admin")
+    ) {
       return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
     }
+
     return null;
   }
 

@@ -22,11 +22,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
 export default function RoleSelect() {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
+
+  const router = useRouter();
   type FormValues = z.infer<typeof SelectRole>;
   const form = useForm<FormValues>({
     resolver: zodResolver(SelectRole),
@@ -41,6 +45,7 @@ export default function RoleSelect() {
     startTransition(() => {
       Role(data).then((data) => {});
     });
+    router.push(DEFAULT_LOGIN_REDIRECT);
   }
 
   return (

@@ -9,8 +9,8 @@ export default async function UserInfo() {
     <div className="bg-gray-100">
       <h1>NextJS 15 e NextAuth V5</h1>
       <p>User signed with name {session?.user?.name}</p>
-      <p> User signed withe mail {session?.user?.email}</p>
-
+      <p> User signed with email {session?.user?.email}</p>
+      <p>Your role is "{session?.user?.role}"</p>
       {session?.user?.image && (
         <Image
           src={session.user.image}

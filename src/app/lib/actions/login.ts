@@ -23,7 +23,7 @@ export const Login = async (values: z.infer<typeof LoginSchema>) => {
         email,
         password,
         role,
-        redirectTo: DEFAULT_LOGIN_REDIRECT,
+        redirectTo: "/api/user-info",
       });
       return { success: "Login with success" };
     }
