@@ -1,9 +1,12 @@
 import { Sequelize } from "sequelize";
 import mysql2 from "mysql2";
 
-const url = process.env.DATABASE_URL;
+const pass = process.env.DATABASE_PASS as string;
+const user = process.env.DATABASE_USER as string;
+const database = process.env.DATABASE_NAME as string;
 
-export const sequelize = new Sequelize(url, {
+export const sequelize = new Sequelize(database, user, pass, {
+  dialect: "mysql",
   dialectModule: mysql2,
 });
 

@@ -9,7 +9,7 @@ import { Login } from "@/app/lib/actions/login";
 import { FormError } from "@/components/form-error";
 import { useSearchParams } from "next/navigation";
 import { FormSucess } from "@/components/form-sucess";
-import { useTransition, useState } from "react";
+import { useTransition, useState, Suspense } from "react";
 import {
   Field,
   FieldError,
@@ -25,16 +25,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export const CredentialLogin = () => {
+type FormValues = z.infer<typeof LoginSchema>;
+
+function CredentialLoginForm() {
   const searchParams = useSearchParams();
   const urlError =
     searchParams.get("error") === "OAuthAccountNotLinked"
       ? "Email already in use with diferent provider!"
       : "";
-
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
+
   const form = useForm<FormValues>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -43,8 +45,6 @@ export const CredentialLogin = () => {
       role: undefined,
     },
   });
-
-  type FormValues = z.infer<typeof LoginSchema>;
 
   function onSubmit(data: FormValues) {
     setError("");
@@ -104,7 +104,6 @@ export const CredentialLogin = () => {
               </Field>
             )}
           />
-
           <Controller
             name="role"
             control={form.control}
@@ -132,7 +131,6 @@ export const CredentialLogin = () => {
               </Field>
             )}
           />
-
           <FormError message={error || urlError} />
           <FormSucess message={success} />
           <Field orientation="vertical">
@@ -160,5 +158,13 @@ export const CredentialLogin = () => {
         </FieldGroup>
       </FieldSet>
     </form>
+  );
+}
+
+export const CredentialLogin = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CredentialLoginForm />
+    </Suspense>
   );
 };
